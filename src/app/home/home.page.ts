@@ -2,7 +2,8 @@ import { Component, OnInit , NgZone} from '@angular/core';
 import {
   ToastController,
   Platform,
-  LoadingController
+  LoadingController,
+  NavController
 } from '@ionic/angular';
 import {
   GoogleMaps,
@@ -12,6 +13,7 @@ import {
   GoogleMapsAnimation,
   MyLocation
 } from '@ionic-native/google-maps';
+
 
 
 declare var google: any;
@@ -39,6 +41,7 @@ export class HomePage implements OnInit {
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public zone: NgZone,
+    public navCtrl: NavController,
     private platform: Platform) {
       this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
       this.geocoder = new google.maps.Geocoder();
@@ -137,16 +140,25 @@ export class HomePage implements OnInit {
 
   confirmLocation() {
     if (!this.destination || !this.myCurrentLocation) {
-      this.showToast('Select location');
+      this.showToast('Select location and destination!');
+      return;
     }
+
+
+    this.navCtrl.navigateForward(['/qaren'], {
+      queryParams: {
+        myCurrentLocation: JSON.stringify(this.myCurrentLocation),
+        destination: JSON.stringify(this.destination),
+      }
+    });
   }
 
 
   async mylocation() {
     this.map.clear();
     this.destination = undefined;
-    this.myCurrentLocation = undefined;
     this.destinationMarker = undefined;
+    this.myCurrentLocation = undefined;
 
     this.loading = await this.loadingCtrl.create({
       message: 'Please wait...'
