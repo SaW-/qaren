@@ -1,9 +1,29 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>qaren</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  <ion-title text-center>حدد الشركة</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-Hi
+<ion-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+            <img  (click)="isUber = !isUber" style="width: 100%" src="../assets/imgs/uber.png"/>
+            <ion-checkbox style=" position: absolute; bottom: 10%; right: 10%; " [(ngModel)]="isUber"></ion-checkbox>
+        </ion-col>
+        <ion-col>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 </ion-content>
+
+<ion-footer align="center" no-border>
+    <ion-toolbar>
+        <ion-button expand="full" color="success" padding full text-center size="large" ion-button (click)="next()">قارن</ion-button>
+    </ion-toolbar>
+  </ion-footer>
