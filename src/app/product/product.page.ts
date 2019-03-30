@@ -26,7 +26,7 @@ export class ProductPage implements OnInit {
 
   constructor(private route: ActivatedRoute,
     public api: RestApiService, public loadingController: LoadingController,
-    public navCtrl: NavController,
+    public navCtrl: NavController, public plt: Platform,
     public toastCtrl: ToastController) {
     this.isUber = false;
     this.route.queryParams.subscribe(params => {
@@ -46,7 +46,8 @@ export class ProductPage implements OnInit {
     this.api.getProducts(this.myCurrentLocation.lat, this.myCurrentLocation.lng)
       .subscribe(res => {
         console.log(res);
-        this.uberProducts = res[0].products;
+        this.uberProducts = JSON.parse(res[0]['data']).products;
+
         console.log(this.uberProducts);
         loading.dismiss();
       }, err => {
@@ -66,7 +67,7 @@ export class ProductPage implements OnInit {
       .subscribe(res => {
         console.log(res);
 
-        res[0].prices.forEach(element => {
+        JSON.parse(res[0]['data']).prices.forEach(element => {
           if (element.product_id === optionValue.detail.value) {
             this.uberPrice = element.estimate;
             console.log(element.estimate);
@@ -96,6 +97,23 @@ export class ProductPage implements OnInit {
   }
 
   openUber() {
+    if (this.plt.is('android')) {
+      const appId = 'com.ubercab';
+      const appStarter = (window as any).startApp.set({ 'package': appId });
+      appStarter.start(function (msg) {
+         console.log('starting BB app: ' + msg);
+      }, function (err) {
+        console.log('BB app not installed', err);
+      });
+    } else if (this.plt.is('ios')) {
+      const appId = 'ubercab://';
+      const appStarter = (window as any).startApp.set(appId);
+      appStarter.start(function (msg) {
+        console.log('starting BB app: ' + msg);
+      }, function (err) {
+        console.log('BB app not installed', err);
+      });
+    }
   }
 
   openBest() {
